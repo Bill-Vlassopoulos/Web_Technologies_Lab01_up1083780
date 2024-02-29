@@ -13,15 +13,24 @@ def main():
     pattern = re.compile(r"Set-Cookie")
     matches = re.search(pattern, text)
 
+    if "Server" in response.headers:
+        print("\nServer used->", response.headers.get("Server"))
+    else:
+        print("No server detected")
+
     if matches is not None:
         print("Η σελίδα χρησιμοποιεί cookies")
 
         text = response.headers["Set-Cookie"]
-        print(text)
+        # print(text)
         pattern = r"(Expires=.*?;|expires=.*?;)"
-        print(re.findall(pattern, text))
+        dates = re.findall(pattern, text)
         pattern = r"(^.*?=|,\s[a-zA-Z_].*?=)"
-        print(re.findall(pattern, text))
+        cookie_names = re.findall(pattern, text)
+        for i in range(len(dates)):
+            name = cookie_names[i][:-1]
+            date = dates[i]
+            print(name + " " + date)
     else:
         print("Η σελίδα δεν χρησιμοποιεί cookies")
 
